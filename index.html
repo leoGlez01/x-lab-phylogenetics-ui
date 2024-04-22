@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div style="height: 400px; width: 400px; position: relative;" id='viewer'></div>
+    <script>
+        $(function() {
+            var viewer = $3Dmol.createViewer('viewer', {});
+            $.get(`http://localhost:8001/${new URLSearchParams(window.location.search).get('pdb')}`, function(data) {
+            viewer.addAsOneMolecule(data, 'pdb');
+            viewer.zoomTo();
+            viewer.render();
+        });
+        });
+        </script>
+        
+</body>
+</html>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>907</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <item>
+     <widget class="QFrame" name="Tapiz">
+      <property name="styleSheet">
+       <string notr="true">background:qlineargradient(spread:pad, x1:0, y1:0.131, x2:0, y2:1, stop:0.829545 rgba(10, 53, 75, 248), stop:1 rgba(109, 136, 145, 255));</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QFrame" name="NavBar">
+         <property name="styleSheet">
+          <string notr="true">QFrame{
+background-color: rgba(0, 0, 0,0.1);
+max-height:30px;
+min-height:30px;
+}
+
+QPushButton{
+	color:#fff;
+	font-size:12px;
+	min-width:70px;
+	max-width:70px;
+	max-height:10px;
+	min-height:10px;
+	padding:0;
+	margin:0;
+	border:none;
+	background-color:none;
+}
+
+QPushButton:hover{
+	color:#add8e5;
+	font-size:13px;
+}</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="btn_menu">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Menu</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPushButton" name="btn_restaurar">
+              <property name="text">
+               <string>Max</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_close">
+              <property name="text">
+               <string>Cerrar</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="MainContent">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgba(0, 0, 0,0);
+</string>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QFrame" name="Controls">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(0, 0, 0,0);
+min-width:230px;
+max-width:0;
+border:none;</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="styleSheet">
+                <string notr="true">color:#fff;
+font-size:14px;
+background-color: rgba(0, 0, 0,0);
+min-height:30px;
+max-height:30px;</string>
+               </property>
+               <property name="text">
+                <string>Organism</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QListView" name="ListGen">
+               <property name="styleSheet">
+                <string notr="true">QListView {
+    border:none;
+	background-color: rgba(0, 0, 0,0.1);
+	margin:0;
+	max-width:200px;
+	min-width:200px;
+}
+QListView::item {
+	font-size:12px;
+	color:#fff;
+	font-size:14px;
+}</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="Visualizer">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgba(0, 0, 0,0);
+border:none;</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="styleSheet">
+                <string notr="true">font-size:14px;
+color:#fff;
+min-height:30px;
+max-height:30px;</string>
+               </property>
+               <property name="text">
+                <string>Visualization</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="Visor" native="true">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgba(0, 0, 0,0.5);
+border:none;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
