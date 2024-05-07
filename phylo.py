@@ -1,14 +1,11 @@
-import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout
-from PyQt5.QtCore import QPropertyAnimation, QUrl
+from PyQt5.QtCore import QPropertyAnimation
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.uic import loadUi
-from conect import get_info
-from PyQt5.QtWebEngineWidgets import QWebEngineView
-from Bio.PDB import PDBIO, Structure, Model, Chain, Residue
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 from Bio.Seq import Seq
-from Bio.SeqUtils import seq3
-import os
 import threading
 import http.server
 
@@ -24,10 +21,9 @@ def start_server():
 
 threading.Thread(target=start_server, daemon=True).start()
 
-
-class VentanaPrincipal(QMainWindow):
-    def __init__(self):
-        super(VentanaPrincipal, self).__init__()
+class Viewer(QMainWindow):
+    def __init__(self, dna_sequence):
+        super(Viewer, self).__init__()
         loadUi('phylo.ui', self)
 
         self.btn_menu.clicked.connect(self.slide_menu)
@@ -47,80 +43,24 @@ class VentanaPrincipal(QMainWindow):
         self.gripSize = 10
         self.grip = QtWidgets.QSizeGrip(self)
         self.grip.resize(self.gripSize, self.gripSize)
-
-        self.datos = get_info()
-        # print(datos)
-
-        self.ListGen.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-
-        # Crea el modelo para la QListView.
-        model = QtGui.QStandardItemModel(self.ListGen)
-
-        # Añade los datos al modelo.
-        for item in self.datos:
-            model.appendRow(QtGui.QStandardItem(item['organism']))
-
         
-        # Asigna el modelo a la QListView.
-        self.ListGen.setModel(model)
-
-        self.ListGen.clicked.connect(self.on_item_clicked)
-
-        
-        '''Canvas Widget Config'''
-        self.view = QWebEngineView()
         layout = QVBoxLayout()
         self.Visor.setLayout(layout)
-        layout.addWidget(self.view)
 
-    def on_item_clicked(self, index):
-        # Obtiene los datos del elemento seleccionado.
-        item_data = self.datos[index.row()]
+        # Creamos el gráfico
+        self.fig = Figure(figsize=(10, 5), facecolor='black')
+        self.ax = self.fig.add_subplot(111)
 
-        # Llama a plot con los datos del elemento seleccionado.
-        self.plot(item_data)
+        # Agregamos el gráfico a la ventana
+        self.canvas = FigureCanvas(self.fig)
+        self.canvas.setStyleSheet("background-color:black;")
+        layout.addWidget(self.canvas)
 
-    def plot(self, data):
-        # Procesa los datos.
-        dna_sequence = data['info']
+        # Tu secuencia de ADN
+        self.my_seq = Seq(dna_sequence)
 
-        # Convierte la secuencia de ADN en una secuencia de aminoácidos
-        protein_seq = Seq(dna_sequence).translate(to_stop=False)
-        protein_seq = protein_seq.strip('*')
-
-        # Convierte la secuencia de aminoácidos en una secuencia de tres letras
-        three_letter_seq = seq3(protein_seq)
-
-        # Crea un nuevo objeto Structure
-        structure = Structure.Structure("My_Protein")
-
-        # Añade un modelo al objeto Structure
-        model = Model.Model(0)
-        structure.add(model)
-
-        # Añade una cadena al modelo
-        chain = Chain.Chain("A")
-        model.add(chain)
-
-        # Añade los residuos a la cadena
-        for i, residue in enumerate(three_letter_seq.split("-")):
-            res = Residue.Residue((" ", i, " "), residue, " ")
-            chain.add(res)
-
-        # Guarda el objeto Structure en un archivo
-        io = PDBIO()
-        io.set_structure(structure)
-        pdb_file_name = "my_protein.pdb"
-        io.save(pdb_file_name)
-
-        # Actualiza la vista del visor con el nuevo archivo PDB
-        self.update_viewer(pdb_file_name)
-
-    def update_viewer(self, pdb_file_name):
-        # Carga el archivo HTML en tu aplicación PyQt5
-        self.view.load(QUrl(f"http://localhost:8001/index.html?pdb={pdb_file_name}"))
-
-
+        # Dibujamos las líneas entre las bases y sus complementos
+        self.draw_dna()
 
 
     def restaurar(self):
@@ -162,11 +102,42 @@ class VentanaPrincipal(QMainWindow):
             self.animacion.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
             self.animacion.start()
 
+    def draw_dna(self):
+        # Limpiamos el gráfico
+        self.ax.clear()
 
+        # Obtenemos la secuencia complementaria
+        complement_seq = self.my_seq.complement()
 
+        # Dibujamos las líneas entre las bases y sus complementos
+        for pos, (base, comp_base) in enumerate(zip(self.my_seq, complement_seq)):
+            self.ax.plot([pos+1, pos+1], [3, 6], color='#ff00b8ff')
+            if base == "A":
+                self.ax.text(pos+1, 3, base, ha='center', va='center', color='#ff3535ff')
+                self.ax.text(pos+1, 6, comp_base, ha='center', va='center', color='#00ff57ff')
+            elif base == "T":
+                self.ax.text(pos+1, 3, base, ha='center', va='center', color='#00ff57ff')
+                self.ax.text(pos+1, 6, comp_base, ha='center', va='center', color='#ff3535ff')
+            elif base == "G":
+                self.ax.text(pos+1, 3, base, ha='center', va='center', color='#ffe600ff')
+                self.ax.text(pos+1, 6, comp_base, ha='center', va='center', color='#00efffff')
+            elif base == "C":
+                self.ax.text(pos+1, 3, base, ha='center', va='center', color='#00efffff')
+                self.ax.text(pos+1, 6, comp_base, ha='center', va='center', color='#ffe600ff')
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mi_app = VentanaPrincipal()
-    mi_app.show()
-    sys.exit(app.exec_())
+        # Ajustamos los límites del gráfico
+        self.ax.set_ylim(0, 9)
+        self.ax.set_xlim(0, len(self.my_seq)+1)
+
+        # Ajustamos las etiquetas del eje y para mostrar las bases en lugar de números
+        self.ax.set_yticks([])
+        self.ax.set_xticks([])
+
+        # Cambiamos el color de fondo del gráfico a negro
+        self.ax.set_facecolor('black')
+
+        # Ocultamos los ejes
+        self.ax.axis('off')
+
+        # Redibujamos el gráfico
+        self.canvas.draw()
